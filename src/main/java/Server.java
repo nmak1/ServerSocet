@@ -5,19 +5,22 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import static java.lang.System.out;
+
 public class Server {
     public static void main(String[] args) throws IOException {
         int port = 8089;
         while (true){
             ServerSocket serverSocket = new ServerSocket(port);
-            Socket clientSocket = serverSocket.accept(); // ждем подключения
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            System.out.println("New connection accepted");
+            try (Socket clientSocket = serverSocket.accept()) {
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                System.out.println("New connection accepted");
 
-             String name = in.readLine();
+                String name = in.readLine();
 
-            out.println(String.format("Hi %s, your port is %d", name, clientSocket.getPort()));
+                out.println(String.format("Hi %s, your port is %d", name, clientSocket.getPort()));
+            }
         }
 
     }
